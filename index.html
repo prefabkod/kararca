@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Net Karar</title>
+    <title>Kararca | Analitik Motor v2</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,6 +13,7 @@
             --text: #f0f0f0;
             --accent: #fff;
             --primary: #0066ff;
+            --danger: #ff4444;
         }
 
         body {
@@ -27,20 +28,27 @@
         .container { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
 
         /* KURULUM EKRANI */
-        .setup-group { margin-bottom: 30px; }
-        .setup-title { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
+        .setup-group { margin-bottom: 35px; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .setup-title { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; font-weight: 600; }
         
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        input[type="text"] { flex-grow: 1; background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 8px; outline: none; font-size: 1rem; }
+        input[type="text"] { flex-grow: 1; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 8px; outline: none; font-size: 1rem; }
         input[type="text"]:focus { border-color: var(--primary); }
         
-        button.add-btn { background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 0 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        
-        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag { background: #222; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-        .tag span { cursor: pointer; color: #ff4444; font-weight: bold; }
+        button.add-btn { background: var(--accent); color: #000; border: none; padding: 0 20px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        button.add-btn:active { transform: scale(0.95); }
 
-        .main-btn { background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; width: 100%; margin-top: auto; cursor: pointer; }
+        /* AĞIRLIK SLIDERI İÇİN ÖZEL ALAN */
+        .weight-control { display: flex; align-items: center; gap: 15px; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .weight-label { font-size: 0.85rem; color: #aaa; width: 100px; }
+        .weight-val-display { font-weight: 800; color: var(--primary); width: 25px; text-align: right; }
+        
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { background: #000; border: 1px solid var(--border); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .tag .weight-badge { color: var(--primary); font-size: 0.8rem; font-weight: 800; }
+        .tag span { cursor: pointer; color: var(--danger); font-weight: bold; padding: 0 5px; }
+
+        .main-btn { background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; width: 100%; margin-top: auto; cursor: pointer; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
 
         /* PUANLAMA EKRANI */
         #scoring-view, #result-view { display: none; flex-direction: column; height: 100%; }
@@ -48,24 +56,24 @@
         .criterion-header { text-align: center; margin-bottom: 30px; }
         .criterion-header h2 { font-size: 2rem; margin: 0; color: var(--primary); }
         .criterion-header p { color: #666; margin: 5px 0 0 0; font-size: 0.9rem; }
+        .crit-weight-info { display: inline-block; background: rgba(0, 102, 255, 0.1); color: var(--primary); padding: 4px 12px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; margin-top: 10px; border: 1px solid rgba(0, 102, 255, 0.3); }
 
         .eval-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
         .eval-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .eval-title { font-weight: 600; font-size: 1.1rem; }
-        .eval-score { font-size: 1.5rem; font-weight: 800; color: var(--primary); width: 45px; text-align: right; }
+        .eval-score { font-size: 1.5rem; font-weight: 800; color: var(--accent); width: 45px; text-align: right; }
 
-        /* ÖZEL SLIDER (1-10 buçuklu) */
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px rgba(0, 102, 255, 0.5); }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
 
         /* SONUÇ EKRANI */
         .result-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border); }
-        .result-item.winner { border-color: var(--primary); background: rgba(0, 102, 255, 0.1); }
-        .result-rank { font-size: 1.5rem; font-weight: 800; color: #555; width: 30px; }
+        .result-item.winner { border-color: var(--primary); background: rgba(0, 102, 255, 0.05); }
+        .result-rank { font-size: 1.5rem; font-weight: 800; color: #444; width: 30px; }
         .winner .result-rank { color: var(--primary); }
         .result-name { flex-grow: 1; font-weight: 600; font-size: 1.2rem; margin-left: 15px; }
-        .result-total { font-size: 1.5rem; font-weight: 800; }
+        .result-total { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
 
         .nav-buttons { display: flex; gap: 10px; margin-top: auto; padding-bottom: 20px;}
         .nav-buttons button { flex: 1; }
@@ -80,30 +88,37 @@
     
     <div id="setup-view">
         <div class="setup-group">
-            <label class="setup-title">1. Neleri Kıyaslıyoruz? (Opsiyonlar)</label>
+            <label class="setup-title">1. Opsiyonlar (Neyi Seçiyoruz?)</label>
             <div class="input-row">
-                <input type="text" id="opt-input" placeholder="Örn: A Markası, B Evi...">
-                <button class="add-btn" onclick="addTag('options', 'opt-input', 'opt-tags')">Ekle</button>
+                <input type="text" id="opt-input" placeholder="Örn: X Markası, Y Şehri...">
+                <button class="add-btn" onclick="addOption()">Ekle</button>
             </div>
             <div class="tag-container" id="opt-tags"></div>
         </div>
 
         <div class="setup-group">
-            <label class="setup-title">2. Hangi Açılardan? (Kriterler)</label>
-            <div class="input-row">
+            <label class="setup-title">2. Kriterler (Hangi Açılardan?)</label>
+            <div class="input-row" style="margin-bottom: 10px;">
                 <input type="text" id="crit-input" placeholder="Örn: Fiyat, Performans...">
-                <button class="add-btn" onclick="addTag('criteria', 'crit-input', 'crit-tags')">Ekle</button>
             </div>
+            <div class="weight-control">
+                <div class="weight-label">Önem Derecesi</div>
+                <input type="range" id="crit-weight" min="1" max="10" step="1" value="5" oninput="document.getElementById('weight-display').innerText = this.value">
+                <div class="weight-val-display" id="weight-display">5</div>
+            </div>
+            <button class="add-btn" style="width: 100%; padding: 15px; margin-bottom: 10px;" onclick="addCriterion()">Kriteri ve Ağırlığı Ekle</button>
+            
             <div class="tag-container" id="crit-tags"></div>
         </div>
 
-        <button class="main-btn" onclick="startScoring()">Puanlamaya Geç →</button>
+        <button class="main-btn" onclick="startScoring()">Analize Geç →</button>
     </div>
 
     <div id="scoring-view">
         <div class="criterion-header">
             <h2 id="current-crit-name">Kriter Adı</h2>
-            <p><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
+            <div class="crit-weight-info" id="current-crit-weight">Ağırlık Çarpanı: x5</div>
+            <p style="margin-top: 15px;"><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
         </div>
 
         <div id="evaluation-list" style="overflow-y: auto; flex-grow: 1; padding-bottom: 20px;">
@@ -117,13 +132,13 @@
 
     <div id="result-view">
         <div class="criterion-header">
-            <h2>Analiz Sonucu</h2>
-            <p>Matematiksel olarak en mantıklı sıralama</p>
+            <h2>Rasyonel Sonuç</h2>
+            <p>Ağırlıklı matematik motoru hesaplaması</p>
         </div>
         
         <div id="final-results"></div>
         
-        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Analiz Başlat</button>
+        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Matris Oluştur</button>
     </div>
 
 </div>
@@ -132,37 +147,63 @@
     let data = { options: [], criteria: [], scores: {} };
     let currentCritIndex = 0;
 
-    function addTag(type, inputId, containerId) {
-        const input = document.getElementById(inputId);
-        const val = input.value.trim();
-        if (val && !data[type].includes(val)) {
-            data[type].push(val);
-            renderTags(type, containerId);
-            input.value = '';
+    // Opsiyon Ekleme
+    function addOption() {
+        const val = document.getElementById('opt-input').value.trim();
+        if (val && !data.options.includes(val)) {
+            data.options.push(val);
+            renderOptTags();
+            document.getElementById('opt-input').value = '';
         }
     }
 
-    function removeTag(type, index, containerId) {
-        data[type].splice(index, 1);
-        renderTags(type, containerId);
-    }
-
-    function renderTags(type, containerId) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = data[type].map((item, i) => 
-            `<div class="tag">${item} <span onclick="removeTag('${type}', ${i}, '${containerId}')">✕</span></div>`
+    function renderOptTags() {
+        document.getElementById('opt-tags').innerHTML = data.options.map((opt, i) => 
+            `<div class="tag">${opt} <span onclick="removeOption(${i})">✕</span></div>`
         ).join('');
     }
 
+    function removeOption(idx) {
+        data.options.splice(idx, 1);
+        renderOptTags();
+    }
+
+    // Kriter Ekleme (Ağırlıklı)
+    function addCriterion() {
+        const name = document.getElementById('crit-input').value.trim();
+        const weight = parseInt(document.getElementById('crit-weight').value);
+        
+        if (name && !data.criteria.find(c => c.name === name)) {
+            data.criteria.push({ name: name, weight: weight });
+            renderCritTags();
+            document.getElementById('crit-input').value = '';
+            // Slider'ı sıfırla
+            document.getElementById('crit-weight').value = 5;
+            document.getElementById('weight-display').innerText = 5;
+        }
+    }
+
+    function renderCritTags() {
+        document.getElementById('crit-tags').innerHTML = data.criteria.map((c, i) => 
+            `<div class="tag">${c.name} <span class="weight-badge">(x${c.weight})</span> <span onclick="removeCriterion(${i})">✕</span></div>`
+        ).join('');
+    }
+
+    function removeCriterion(idx) {
+        data.criteria.splice(idx, 1);
+        renderCritTags();
+    }
+
+    // Puanlamayı Başlat
     function startScoring() {
         if (data.options.length < 2 || data.criteria.length < 1) {
-            alert("En az 2 opsiyon ve 1 kriter eklemelisin."); return;
+            alert("Sistem uyarısı: Karar vermek için en az 2 seçenek ve 1 kriter gereklidir."); return;
         }
         
-        // Puan matrisini hazırla
-        data.criteria.forEach(c => { if(!data.scores[c]) data.scores[c] = {}; });
-        data.options.forEach(o => {
-            data.criteria.forEach(c => { if(data.scores[c][o] === undefined) data.scores[c][o] = 5.0; });
+        // Puan objesini hazırla
+        data.criteria.forEach(c => { if(!data.scores[c.name]) data.scores[c.name] = {}; });
+        data.options.forEach(opt => {
+            data.criteria.forEach(c => { if(data.scores[c.name][opt] === undefined) data.scores[c.name][opt] = 5.0; });
         });
 
         document.getElementById('setup-view').style.display = 'none';
@@ -171,8 +212,9 @@
     }
 
     function renderCriterion() {
-        const critName = data.criteria[currentCritIndex];
-        document.getElementById('current-crit-name').innerText = critName;
+        const currentCrit = data.criteria[currentCritIndex];
+        document.getElementById('current-crit-name').innerText = currentCrit.name;
+        document.getElementById('current-crit-weight').innerText = `Ağırlık Çarpanı: x${currentCrit.weight}`;
         document.getElementById('crit-progress').innerText = currentCritIndex + 1;
         document.getElementById('crit-total').innerText = data.criteria.length;
 
@@ -181,25 +223,26 @@
             <div class="eval-card">
                 <div class="eval-header">
                     <div class="eval-title">${opt}</div>
-                    <div class="eval-score" id="score-val-${opt}">${Number(data.scores[critName][opt]).toFixed(1)}</div>
+                    <div class="eval-score" id="score-val-${opt}">${Number(data.scores[currentCrit.name][opt]).toFixed(1)}</div>
                 </div>
-                <input type="range" min="1" max="10" step="0.5" value="${data.scores[critName][opt]}" 
-                    oninput="updateScore('${critName}', '${opt}', this.value)">
+                <input type="range" min="1" max="10" step="0.5" value="${data.scores[currentCrit.name][opt]}" 
+                    oninput="updateScore('${currentCrit.name}', '${opt}', this.value)">
             </div>
         `).join('');
 
         const nextBtn = document.getElementById('next-btn');
         if (currentCritIndex === data.criteria.length - 1) {
-            nextBtn.innerText = "Sonucu Gör";
-            nextBtn.style.background = "#00e676"; // Yeşil bitiş butonu
+            nextBtn.innerText = "Matematiksel Sonucu Gör";
+            nextBtn.style.background = "#00ffa3"; // Neon Yeşil
+            nextBtn.style.color = "#000";
         } else {
             nextBtn.innerText = "Sonraki →";
             nextBtn.style.background = "var(--accent)";
         }
     }
 
-    function updateScore(crit, opt, val) {
-        data.scores[crit][opt] = parseFloat(val);
+    function updateScore(critName, opt, val) {
+        data.scores[critName][opt] = parseFloat(val);
         document.getElementById(`score-val-${opt}`).innerText = parseFloat(val).toFixed(1);
     }
 
@@ -226,12 +269,17 @@
         document.getElementById('scoring-view').style.display = 'none';
         document.getElementById('result-view').style.display = 'flex';
 
+        // AĞIRLIKLI HESAPLAMA MOTORU
         let finalScores = data.options.map(opt => {
             let total = 0;
-            data.criteria.forEach(crit => total += data.scores[crit][opt]);
+            data.criteria.forEach(c => {
+                // Ham Puan * Kriter Ağırlığı
+                total += (data.scores[c.name][opt] * c.weight);
+            });
             return { name: opt, score: total };
         });
 
+        // En yüksek puana göre sırala
         finalScores.sort((a, b) => b.score - a.score);
 
         const resultHtml = finalScores.map((item, i) => `
