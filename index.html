@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Rasyonel Karar Motoru</title>
+    <title>Kararca | Analitik Motor v4</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -27,20 +27,6 @@
         header { padding: 20px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; }
 
         .container { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
-
-        /* YENİ: AÇIKLAMA METNİ */
-        .intro-text {
-            text-align: center;
-            color: #888;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            padding: 0 10px;
-        }
-        .intro-text span {
-            color: var(--primary);
-            font-weight: 600;
-        }
 
         /* HIZLI ŞABLONLAR */
         .template-section { margin-bottom: 25px; }
@@ -117,13 +103,8 @@
 <div class="container">
     
     <div id="setup-view">
-        
-        <div class="intro-text">
-            İki seçenek arasında mı kaldın? Duygularını devreden çıkar. Hazır şablonlardan birini seç veya <span>kendi kıyaslamanı</span> yaratıp matematiğin senin yerine en doğru kararı vermesine izin ver.
-        </div>
-
         <div class="template-section">
-            <label class="template-title">⚡ Hızlı Karar Şablonları</label>
+            <label class="template-title">⚡ Tek Tıkla Başla</label>
             <div class="template-scroll">
                 <button class="template-btn" onclick="loadTemplate(0)">🌯 Cheat Meal Kararı</button>
                 <button class="template-btn" onclick="loadTemplate(1)">📱 Sosyal Medya Çukuru</button>
@@ -134,7 +115,7 @@
         </div>
 
         <div class="setup-group">
-            <label class="setup-title">SIFIRDAN KARAR OLUŞTUR</label>
+            <label class="setup-title">ÖZEL MATRİS KUR</label>
             <div class="input-row">
                 <input type="text" id="opt-input" placeholder="Opsiyon (Örn: X Markası)">
                 <button class="add-btn" onclick="addOption()">Ekle</button>
@@ -172,7 +153,9 @@
             <div class="crit-info-box" id="current-crit-info">...</div>
             <p style="margin-top: 15px; color: #666;"><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
         </div>
+
         <div id="evaluation-list" style="overflow-y: auto; flex-grow: 1; padding-bottom: 20px;"></div>
+
         <div class="nav-buttons">
             <button class="btn-secondary" onclick="prevCriterion()">← Geri</button>
             <button class="main-btn" onclick="nextCriterion()" id="next-btn">Sonraki →</button>
@@ -185,16 +168,16 @@
             <p>Maliyet ve fayda analizi tamamlandı</p>
         </div>
         <div id="final-results"></div>
-        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Karar Oluştur</button>
+        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Matris Oluştur</button>
     </div>
 
 </div>
 
 <script>
-    // JS kodları V4 ile tamamen aynı, sadece metinler değiştirildiği için mantık kusursuz işlemeye devam ediyor.
     let data = { options: [], criteria: [], scores: {} };
     let currentCritIndex = 0;
 
+    // Şablonlarda sign (1 veya -1) ayarlandı.
     const templates = [
         {   
             options: ["Tavuk Döner", "İskender", "Sarma/Dolma"],
@@ -332,7 +315,7 @@
 
         const nextBtn = document.getElementById('next-btn');
         if (currentCritIndex === data.criteria.length - 1) {
-            nextBtn.innerText = "Sonucu Gör";
+            nextBtn.innerText = "Matematiksel Sonucu Gör";
             nextBtn.style.background = "var(--success)"; nextBtn.style.color = "#000";
         } else {
             nextBtn.innerText = "Sonraki →";
@@ -362,9 +345,11 @@
         document.getElementById('scoring-view').style.display = 'none';
         document.getElementById('result-view').style.display = 'flex';
 
+        // YENİ MATEMATİKSEL MOTOR: YÖN (SIGN) İŞİN İÇİNDE
         let finalScores = data.options.map(opt => {
             let total = 0;
             data.criteria.forEach(c => { 
+                // Puan * Ağırlık * Yön (+1 veya -1)
                 total += (data.scores[c.name][opt] * c.weight * c.sign); 
             });
             return { name: opt, score: total };
