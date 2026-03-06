@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Analitik Motor v4.1</title>
+    <title>Kararca | Analitik Motor v4.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -28,7 +28,7 @@
 
         .container { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
 
-        /* YENİ EKLENEN: AÇILIŞ EKRANI / GÖRSEL REHBER */
+        /* AÇILIŞ EKRANI / GÖRSEL REHBER */
         #onboarding-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 5, 5, 0.95); z-index: 9999;
@@ -41,17 +41,8 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
         .onboarding-card h2 { margin-top: 0; color: var(--accent); font-size: 1.5rem; text-align: center; margin-bottom: 25px; font-weight: 800; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .onboarding-card > p { color: #888; text-align: center; font-size: 0.9rem; margin-bottom: 30px; line-height: 1.5; }
         
-        .onboarding-steps { list-style: none; padding: 0; margin: 0 0 30px 0; }
-        .onboarding-steps li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; font-size: 0.95rem; color: #ccc; line-height: 1.4; }
-        .onboarding-steps li span { 
-            background: rgba(0, 102, 255, 0.1); color: var(--primary); font-weight: 800; 
-            min-width: 24px; height: 24px; border-radius: 50%; display: flex; 
-            justify-content: center; align-items: center; font-size: 0.8rem; border: 1px solid rgba(0, 102, 255, 0.3); 
-        }
-
-        /* --- YENİ GÖRSEL REHBER GRID --- */
+        /* GÖRSEL REHBER GRID */
         .guide-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;
         }
@@ -63,7 +54,7 @@
         .guide-label { font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: #666; letter-spacing: 1px; }
         .guide-desc { font-size: 0.8rem; color: #aaa; line-height: 1.4; }
 
-        /* YENİ: AÇIKLAMA METNİ */
+        /* AÇIKLAMA METNİ */
         .intro-text {
             text-align: center;
             color: #888;
@@ -184,22 +175,22 @@
     
     <div id="setup-view">
         <div class="intro-text">
-            Seçeneklerin arasında mı kaldın? Duygularını devreden çıkar. Hazır şablonlardan birini seç veya <span>kendi kıyaslamanı</span> yaratıp matematiğin senin yerine en doğru kararı vermesine izin ver.
+            İki seçenek arasında mı kaldın? Duygularını devreden çıkar. Hazır şablonlardan birini seç veya <span>kendi kıyaslamanı</span> yaratıp matematiğin senin yerine en doğru kararı vermesine izin ver.
         </div>
 
         <div class="template-section">
             <label class="template-title">⚡ Tek Tıkla Başla</label>
             <div class="template-scroll">
                 <button class="template-btn" onclick="loadTemplate(0)">🌯 Cheat Meal Kararı</button>
-                <button class="template-btn" onclick="removeTemplate(1)">📱 Sosyal Medya Çukuru</button>
-                <button class="template-btn" onclick="removeTemplate(2)">♟️ Kafa Dağıtma</button>
+                <button class="template-btn" onclick="loadTemplate(1)">📱 Sosyal Medya Çukuru</button>
+                <button class="template-btn" onclick="loadTemplate(2)">♟️ Kafa Dağıtma</button>
                 <button class="template-btn" onclick="loadTemplate(3)">🏋️ Antrenman Modu</button>
                 <button class="template-btn" onclick="loadTemplate(4)">🦉 Gece Yarısı İkilemi</button>
             </div>
         </div>
 
         <div class="setup-group">
-            <label class="setup-title">ÖZEL MATRİS KUR</label>
+            <label class="setup-title">1. NELERİ KIYASLIYORUZ? (SEÇENEKLER)</label>
             <div class="input-row">
                 <input type="text" id="opt-input" placeholder="Opsiyon (Örn: X Markası)">
                 <button class="add-btn" onclick="addOption()">Ekle</button>
@@ -208,6 +199,7 @@
         </div>
 
         <div class="setup-group">
+            <label class="setup-title">2. HANGİ AÇILARDAN DEĞERLENDİRİYORUZ? (KRİTERLER)</label>
             <div class="input-row" style="margin-bottom: 10px;">
                 <input type="text" id="crit-input" placeholder="Kriter (Örn: Fiyat)">
             </div>
@@ -252,7 +244,7 @@
             <p>Maliyet ve fayda analizi tamamlandı</p>
         </div>
         <div id="final-results"></div>
-        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Matris Oluştur</button>
+        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Karar Oluştur</button>
     </div>
 
 </div>
