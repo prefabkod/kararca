@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Analitik Motor v4.4</title>
+    <title>Kararca | Analitik Motor v4.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -124,11 +124,11 @@
         <div class="template-section">
             <label class="template-title">⚡ Tek Tıkla Başla</label>
             <div class="template-scroll">
-                <button class="template-btn" onclick="loadTemplate(0)">🌯 Cheat Meal Kararı</button>
-                <button class="template-btn" onclick="loadTemplate(1)">📱 Sosyal Medya Çukuru</button>
-                <button class="template-btn" onclick="loadTemplate(2)">♟️ Kafa Dağıtma</button>
-                <button class="template-btn" onclick="loadTemplate(3)">🏋️ Antrenman Modu</button>
-                <button class="template-btn" onclick="loadTemplate(4)">🦉 Gece Yarısı İkilemi</button>
+                <button class="template-btn" onclick="loadTemplate(0)">📱 Akıllı Telefon Seçimi</button>
+                <button class="template-btn" onclick="loadTemplate(1)">🚗 Premium Otomobil</button>
+                <button class="template-btn" onclick="loadTemplate(2)">🎮 Oyun Platformu</button>
+                <button class="template-btn" onclick="loadTemplate(3)">🏖️ Tatil Rotası</button>
+                <button class="template-btn" onclick="loadTemplate(4)">💼 Kariyer Yolu</button>
             </div>
         </div>
 
@@ -198,45 +198,50 @@
 
     const templates = [
         {   
-            options: ["Tavuk Döner", "İskender", "Sarma/Dolma"],
+            options: ["Apple iPhone", "Samsung Galaxy", "Xiaomi"],
             criteria: [
-                {name: "Lezzet Patlaması", weight: 9.0, sign: 1}, 
-                {name: "Maliyet (Pahalıysa 10 ver)", weight: 8.0, sign: -1}, 
-                {name: "Protein Oranı", weight: 7.0, sign: 1}, 
-                {name: "Yemek Sonrası Pişmanlık", weight: 6.0, sign: -1}
+                {name: "Kamera & Video Kalitesi", weight: 9.0, sign: 1}, 
+                {name: "Fiyat/Performans Oranı", weight: 9.5, sign: 1}, 
+                {name: "Ekosistem & Uzun Ömür", weight: 8.5, sign: 1}, 
+                {name: "Yetkili Servis & Onarım Maliyeti", weight: 7.5, sign: -1},
+                {name: "İkinci El Değer Kaybı", weight: 8.0, sign: -1}
             ]
         },
         {   
-            options: ["Instagram", "TikTok", "YouTube"],
+            options: ["Mercedes-Benz", "BMW", "Audi"],
             criteria: [
-                {name: "İçerik Kalitesi", weight: 8.0, sign: 1}, 
-                {name: "Beyin Hücresi Tüketimi", weight: 9.0, sign: -1}, 
-                {name: "Bağımlılık Riski", weight: 10.0, sign: -1}
+                {name: "İç Mekan Konforu & Lüks", weight: 9.0, sign: 1}, 
+                {name: "Sürüş Dinamikleri & Performans", weight: 8.5, sign: 1}, 
+                {name: "Yıllık Bakım & İşletim Maliyeti", weight: 9.0, sign: -1}, 
+                {name: "Marka İmajı & Prestij", weight: 8.0, sign: 1},
+                {name: "İkinci El Satış Hızı", weight: 7.5, sign: 1}
             ]
         },
         {   
-            options: ["Lichess / Satranç", "Dizi İzlemek", "Oyun Oynamak"],
+            options: ["Oyun Bilgisayarı (PC)", "PlayStation 5", "Xbox Series X"],
             criteria: [
-                {name: "Zihinsel Gelişim", weight: 9.0, sign: 1}, 
-                {name: "Eğlence Katsayısı", weight: 8.0, sign: 1}, 
-                {name: "Harcanan Vakit", weight: 6.0, sign: -1}
+                {name: "Donanım & İlk Alım Maliyeti", weight: 9.5, sign: -1}, 
+                {name: "Özel Oyunlar (Exclusives)", weight: 8.5, sign: 1}, 
+                {name: "Oyun Fiyatları & Abonelik Sistemi", weight: 9.0, sign: 1},
+                {name: "Çok Yönlü Kullanım (İş/Yazılım vb.)", weight: 7.5, sign: 1}
             ]
         },
         {   
-            options: ["Definasyon", "Bulk", "Koruma"],
+            options: ["Her Şey Dahil Otel", "Yurt Dışı Kültür Turu", "Doğa & Karavan Kampı"],
             criteria: [
-                {name: "Aynadaki Görsel", weight: 9.0, sign: 1}, 
-                {name: "Diyet Zorluğu", weight: 8.0, sign: -1}, 
-                {name: "Güç Artışı", weight: 7.0, sign: 1}
+                {name: "Fiziksel Dinlenme & Konfor", weight: 9.0, sign: 1}, 
+                {name: "Toplam Bütçe & Kur Etkisi", weight: 9.5, sign: -1}, 
+                {name: "Yeni Kültürler & Keşif", weight: 8.5, sign: 1}, 
+                {name: "Planlama & Organizasyon Stresi", weight: 7.0, sign: -1}
             ]
         },
         {   
-            options: ["Uyumak", "Kod Kasmak", "Diziye Devam"],
+            options: ["Kurumsal Şirket", "Yeni Nesil Startup", "Kendi İşin / Freelance"],
             criteria: [
-                {name: "Yarınki Zindelik", weight: 9.0, sign: 1}, 
-                {name: "Gelecek Yatırımı", weight: 10.0, sign: 1}, 
-                {name: "Anlık Zevk", weight: 6.0, sign: 1},
-                {name: "Göz Yorgunluğu", weight: 7.0, sign: -1}
+                {name: "Maddi Güvence & Düzenli Maaş", weight: 9.0, sign: 1}, 
+                {name: "Özgürlük & Esnek Saatler", weight: 8.5, sign: 1}, 
+                {name: "Stres & Tükenmişlik Riski", weight: 8.5, sign: -1},
+                {name: "Kişisel Gelişim & Öğrenme Hızı", weight: 8.0, sign: 1}
             ]
         }
     ];
