@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Analitik Motor v2</title>
+    <title>Kararca | Analitik Motor v3</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -27,8 +27,22 @@
 
         .container { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
 
+        /* --- YENİ EKLENEN: HIZLI ŞABLONLAR --- */
+        .template-section { margin-bottom: 25px; }
+        .template-title { font-size: 0.8rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; font-weight: 800; }
+        .template-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
+        .template-scroll::-webkit-scrollbar { display: none; }
+        
+        .template-btn { 
+            background: #0a0a0a; border: 1px solid var(--border); color: #ccc; 
+            padding: 12px 18px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+            white-space: nowrap; cursor: pointer; transition: 0.2s; scroll-snap-align: start;
+        }
+        .template-btn:hover { border-color: var(--primary); color: #fff; }
+        .template-btn:active { transform: scale(0.95); }
+
         /* KURULUM EKRANI */
-        .setup-group { margin-bottom: 35px; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .setup-group { margin-bottom: 30px; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
         .setup-title { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; font-weight: 600; }
         
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -38,7 +52,6 @@
         button.add-btn { background: var(--accent); color: #000; border: none; padding: 0 20px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s; }
         button.add-btn:active { transform: scale(0.95); }
 
-        /* AĞIRLIK SLIDERI İÇİN ÖZEL ALAN */
         .weight-control { display: flex; align-items: center; gap: 15px; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; }
         .weight-label { font-size: 0.85rem; color: #aaa; width: 100px; }
         .weight-val-display { font-weight: 800; color: var(--primary); width: 25px; text-align: right; }
@@ -48,7 +61,7 @@
         .tag .weight-badge { color: var(--primary); font-size: 0.8rem; font-weight: 800; }
         .tag span { cursor: pointer; color: var(--danger); font-weight: bold; padding: 0 5px; }
 
-        .main-btn { background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; width: 100%; margin-top: auto; cursor: pointer; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .main-btn { background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; width: 100%; margin-top: auto; cursor: pointer; }
 
         /* PUANLAMA EKRANI */
         #scoring-view, #result-view { display: none; flex-direction: column; height: 100%; }
@@ -64,7 +77,7 @@
         .eval-score { font-size: 1.5rem; font-weight: 800; color: var(--accent); width: 45px; text-align: right; }
 
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px rgba(0, 102, 255, 0.5); }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
 
         /* SONUÇ EKRANI */
@@ -87,27 +100,37 @@
 <div class="container">
     
     <div id="setup-view">
+        
+        <div class="template-section">
+            <label class="template-title">⚡ Tek Tıkla Başla</label>
+            <div class="template-scroll">
+                <button class="template-btn" onclick="loadTemplate(0)">🌯 Cheat Meal Kararı</button>
+                <button class="template-btn" onclick="loadTemplate(1)">📱 Sosyal Medya Çukuru</button>
+                <button class="template-btn" onclick="loadTemplate(2)">♟️ Kafa Dağıtma</button>
+                <button class="template-btn" onclick="loadTemplate(3)">🏋️ Antrenman Modu</button>
+                <button class="template-btn" onclick="loadTemplate(4)">🦉 Gece Yarısı İkilemi</button>
+            </div>
+        </div>
+
         <div class="setup-group">
-            <label class="setup-title">1. Opsiyonlar (Neyi Seçiyoruz?)</label>
+            <label class="setup-title">ÖZEL MATRİS KUR</label>
             <div class="input-row">
-                <input type="text" id="opt-input" placeholder="Örn: X Markası, Y Şehri...">
+                <input type="text" id="opt-input" placeholder="Opsiyon (Örn: X Markası)">
                 <button class="add-btn" onclick="addOption()">Ekle</button>
             </div>
             <div class="tag-container" id="opt-tags"></div>
         </div>
 
         <div class="setup-group">
-            <label class="setup-title">2. Kriterler (Hangi Açılardan?)</label>
             <div class="input-row" style="margin-bottom: 10px;">
-                <input type="text" id="crit-input" placeholder="Örn: Fiyat, Performans...">
+                <input type="text" id="crit-input" placeholder="Kriter (Örn: Fiyat)">
             </div>
             <div class="weight-control">
                 <div class="weight-label">Önem Derecesi</div>
                 <input type="range" id="crit-weight" min="1" max="10" step="1" value="5" oninput="document.getElementById('weight-display').innerText = this.value">
                 <div class="weight-val-display" id="weight-display">5</div>
             </div>
-            <button class="add-btn" style="width: 100%; padding: 15px; margin-bottom: 10px;" onclick="addCriterion()">Kriteri ve Ağırlığı Ekle</button>
-            
+            <button class="add-btn" style="width: 100%; padding: 15px; margin-bottom: 10px;" onclick="addCriterion()">Kriteri Ekle</button>
             <div class="tag-container" id="crit-tags"></div>
         </div>
 
@@ -121,8 +144,7 @@
             <p style="margin-top: 15px;"><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
         </div>
 
-        <div id="evaluation-list" style="overflow-y: auto; flex-grow: 1; padding-bottom: 20px;">
-            </div>
+        <div id="evaluation-list" style="overflow-y: auto; flex-grow: 1; padding-bottom: 20px;"></div>
 
         <div class="nav-buttons">
             <button class="btn-secondary" onclick="prevCriterion()">← Geri</button>
@@ -135,9 +157,7 @@
             <h2>Rasyonel Sonuç</h2>
             <p>Ağırlıklı matematik motoru hesaplaması</p>
         </div>
-        
         <div id="final-results"></div>
-        
         <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Matris Oluştur</button>
     </div>
 
@@ -147,13 +167,45 @@
     let data = { options: [], criteria: [], scores: {} };
     let currentCritIndex = 0;
 
-    // Opsiyon Ekleme
+    // --- ŞABLON VERİTABANI ---
+    const templates = [
+        {   // 0
+            options: ["Tavuk Döner", "İskender", "Sarma/Dolma"],
+            criteria: [{name: "Lezzet Patlaması", weight: 9}, {name: "Cüzdan Dostu", weight: 8}, {name: "Protein & Makro", weight: 7}, {name: "Yemek Sonrası Pişmanlık", weight: 6}]
+        },
+        {   // 1
+            options: ["Instagram", "TikTok", "YouTube"],
+            criteria: [{name: "İçerik Kalitesi", weight: 8}, {name: "Beyin Hücresi Tüketimi", weight: 9}, {name: "Bağımlılık Riski", weight: 10}]
+        },
+        {   // 2
+            options: ["Lichess / Satranç", "Dizi İzlemek", "Oyun Oynamak"],
+            criteria: [{name: "Zihinsel Gelişim", weight: 9}, {name: "Eğlence Katsayısı", weight: 8}, {name: "Harcanan Vakit", weight: 6}]
+        },
+        {   // 3
+            options: ["Definasyon (Kesik)", "Bulk (Hacim)", "Koruma"],
+            criteria: [{name: "Aynadaki Görsel", weight: 9}, {name: "Disiplin & Diyet Zorluğu", weight: 8}, {name: "Güç Artışı", weight: 7}]
+        },
+        {   // 4
+            options: ["Uyumak", "Kod/Proje Kasmak", "Diziye Devam"],
+            criteria: [{name: "Yarınki Zindelik", weight: 9}, {name: "Gelecek Yatırımı", weight: 10}, {name: "Anlık Zevk", weight: 6}]
+        }
+    ];
+
+    // Şablon Yükleme Motoru
+    function loadTemplate(idx) {
+        data.options = [...templates[idx].options];
+        // Kriterleri derin kopyala ki referans hatası olmasın
+        data.criteria = JSON.parse(JSON.stringify(templates[idx].criteria));
+        
+        // Direk puanlamaya fırlat
+        startScoring();
+    }
+
+    // --- MEVCUT MANUEL EKLEME FONKSİYONLARI ---
     function addOption() {
         const val = document.getElementById('opt-input').value.trim();
         if (val && !data.options.includes(val)) {
-            data.options.push(val);
-            renderOptTags();
-            document.getElementById('opt-input').value = '';
+            data.options.push(val); renderOptTags(); document.getElementById('opt-input').value = '';
         }
     }
 
@@ -163,23 +215,15 @@
         ).join('');
     }
 
-    function removeOption(idx) {
-        data.options.splice(idx, 1);
-        renderOptTags();
-    }
+    function removeOption(idx) { data.options.splice(idx, 1); renderOptTags(); }
 
-    // Kriter Ekleme (Ağırlıklı)
     function addCriterion() {
         const name = document.getElementById('crit-input').value.trim();
         const weight = parseInt(document.getElementById('crit-weight').value);
-        
         if (name && !data.criteria.find(c => c.name === name)) {
             data.criteria.push({ name: name, weight: weight });
-            renderCritTags();
-            document.getElementById('crit-input').value = '';
-            // Slider'ı sıfırla
-            document.getElementById('crit-weight').value = 5;
-            document.getElementById('weight-display').innerText = 5;
+            renderCritTags(); document.getElementById('crit-input').value = '';
+            document.getElementById('crit-weight').value = 5; document.getElementById('weight-display').innerText = 5;
         }
     }
 
@@ -189,18 +233,14 @@
         ).join('');
     }
 
-    function removeCriterion(idx) {
-        data.criteria.splice(idx, 1);
-        renderCritTags();
-    }
+    function removeCriterion(idx) { data.criteria.splice(idx, 1); renderCritTags(); }
 
-    // Puanlamayı Başlat
+    // --- MATRİS MOTORU ---
     function startScoring() {
         if (data.options.length < 2 || data.criteria.length < 1) {
-            alert("Sistem uyarısı: Karar vermek için en az 2 seçenek ve 1 kriter gereklidir."); return;
+            alert("En az 2 seçenek ve 1 kriter gereklidir."); return;
         }
         
-        // Puan objesini hazırla
         data.criteria.forEach(c => { if(!data.scores[c.name]) data.scores[c.name] = {}; });
         data.options.forEach(opt => {
             data.criteria.forEach(c => { if(data.scores[c.name][opt] === undefined) data.scores[c.name][opt] = 5.0; });
@@ -233,11 +273,10 @@
         const nextBtn = document.getElementById('next-btn');
         if (currentCritIndex === data.criteria.length - 1) {
             nextBtn.innerText = "Matematiksel Sonucu Gör";
-            nextBtn.style.background = "#00ffa3"; // Neon Yeşil
-            nextBtn.style.color = "#000";
+            nextBtn.style.background = "#00ffa3"; nextBtn.style.color = "#000";
         } else {
             nextBtn.innerText = "Sonraki →";
-            nextBtn.style.background = "var(--accent)";
+            nextBtn.style.background = "var(--accent)"; nextBtn.style.color = "#000";
         }
     }
 
@@ -247,19 +286,13 @@
     }
 
     function nextCriterion() {
-        if (currentCritIndex < data.criteria.length - 1) {
-            currentCritIndex++;
-            renderCriterion();
-        } else {
-            showResults();
-        }
+        if (currentCritIndex < data.criteria.length - 1) { currentCritIndex++; renderCriterion(); } 
+        else { showResults(); }
     }
 
     function prevCriterion() {
-        if (currentCritIndex > 0) {
-            currentCritIndex--;
-            renderCriterion();
-        } else {
+        if (currentCritIndex > 0) { currentCritIndex--; renderCriterion(); } 
+        else {
             document.getElementById('scoring-view').style.display = 'none';
             document.getElementById('setup-view').style.display = 'flex';
         }
@@ -269,28 +302,21 @@
         document.getElementById('scoring-view').style.display = 'none';
         document.getElementById('result-view').style.display = 'flex';
 
-        // AĞIRLIKLI HESAPLAMA MOTORU
         let finalScores = data.options.map(opt => {
             let total = 0;
-            data.criteria.forEach(c => {
-                // Ham Puan * Kriter Ağırlığı
-                total += (data.scores[c.name][opt] * c.weight);
-            });
+            data.criteria.forEach(c => { total += (data.scores[c.name][opt] * c.weight); });
             return { name: opt, score: total };
         });
 
-        // En yüksek puana göre sırala
         finalScores.sort((a, b) => b.score - a.score);
 
-        const resultHtml = finalScores.map((item, i) => `
+        document.getElementById('final-results').innerHTML = finalScores.map((item, i) => `
             <div class="result-item ${i === 0 ? 'winner' : ''}">
                 <div class="result-rank">#${i + 1}</div>
                 <div class="result-name">${item.name}</div>
                 <div class="result-total">${item.score.toFixed(1)}</div>
             </div>
         `).join('');
-
-        document.getElementById('final-results').innerHTML = resultHtml;
     }
 </script>
 
