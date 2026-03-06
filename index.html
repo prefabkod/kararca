@@ -3,191 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Cam Deneyimi</title>
+    <title>Kararca | Analitik Deneyim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.15);
-            --neon: #00ff88;
+            --bg: #000;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.12);
+            --accent: #fff;
+            --neon: #00ffa3;
         }
 
         body {
-            background: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--accent);
+            font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
             overflow-x: hidden;
-            min-height: 100vh;
-            background: radial-gradient(circle at top right, #1a1a2e, #000);
+            background: radial-gradient(circle at top right, #1a1a1a, #000);
         }
 
-        header {
-            padding: 30px 20px;
+        /* 1. GİRİŞ KARTI (OVERLAY) */
+        #welcome-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 40px;
             text-align: center;
+            max-width: 500px;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
         }
 
-        h1 {
-            font-size: 2rem;
-            letter-spacing: 5px;
-            margin: 0;
-            font-weight: 900;
-            background: linear-gradient(to right, #fff, #555);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .welcome-card h2 { font-weight: 800; font-size: 2.5rem; letter-spacing: -2px; margin-bottom: 10px; }
+        .welcome-card p { color: #888; line-height: 1.6; margin-bottom: 30px; }
+
+        /* 2. ANA TABLO (BENTO TARZI) */
+        .main-content {
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        /* Kaydıralabilir Kart Alanı */
+        .bento-table {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .bento-table th { padding: 20px; font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 2px; text-align: left; }
+        .bento-table td { padding: 20px; border-top: 1px solid var(--border); cursor: pointer; }
+        .bento-table tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* 3. TEKİL KART MODAL (KAYDIRILABİLİR) */
+        #card-modal {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 90;
+            display: none;
+            flex-direction: column;
+        }
+
         .swiper-container {
             display: flex;
             overflow-x: auto;
-            padding: 20px;
-            gap: 20px;
             scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
+            height: 100%;
+            align-items: center;
+            padding: 0 20px;
         }
 
-        .swiper-container::-webkit-scrollbar { display: none; }
-
-        .card {
-            min-width: 80vw;
-            height: 400px;
+        .detail-card {
+            min-width: 85vw;
+            height: 70vh;
             background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--border);
-            border-radius: 30px;
+            border-radius: 40px;
+            margin-right: 20px;
             scroll-snap-align: center;
+            padding: 40px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            padding: 30px;
-            box-sizing: border-box;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            justify-content: center;
         }
 
-        .card-number {
-            font-size: 4rem;
-            font-weight: 900;
-            opacity: 0.1;
-            position: absolute;
-            top: 10px;
-            right: 20px;
-        }
-
-        input {
+        .detail-card input {
             background: transparent;
             border: none;
-            border-bottom: 2px solid var(--border);
+            border-bottom: 1px solid var(--border);
             color: #fff;
-            font-size: 1.2rem;
-            padding: 10px 0;
-            outline: none;
+            font-size: 2rem;
+            font-weight: 800;
             width: 100%;
+            outline: none;
             margin-bottom: 20px;
         }
 
-        input:focus { border-bottom-color: var(--neon); }
-
-        .score-row {
-            margin-top: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .total-badge {
-            background: var(--neon);
-            color: #000;
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-weight: 900;
-            font-size: 1.2rem;
-        }
-
-        .controls {
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .btn {
+        /* BUTONLAR */
+        button {
             background: #fff;
             color: #000;
             border: none;
-            padding: 15px 30px;
+            padding: 18px 35px;
             border-radius: 100px;
-            font-weight: bold;
-            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        .btn-add {
+        .close-btn {
+            position: absolute;
+            top: 40px;
+            right: 40px;
             background: transparent;
             color: #fff;
             border: 1px solid var(--border);
+            padding: 10px 20px;
         }
 
-        .hint {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 10px;
-        }
+        .neon-text { color: var(--neon); font-weight: 800; font-size: 1.5rem; }
+
     </style>
 </head>
 <body>
 
-<header>
-    <h1>KARARCA</h1>
-    <div class="hint">← Seçenekleri sağa sola kaydır →</div>
-</header>
-
-<div class="swiper-container" id="deck">
-    <div class="card">
-        <div class="card-number">01</div>
-        <label>SEÇENEK ADI</label>
-        <input type="text" value="Aday A">
-        
-        <label>KRİTER PUANI</label>
-        <input type="number" class="val" value="0" oninput="updateScore(this)">
-        
-        <div class="score-row">
-            <span>TOPLAM SKOR</span>
-            <div class="total-badge">0.0</div>
-        </div>
+<div id="welcome-overlay">
+    <div class="welcome-card">
+        <h2>KARARCA</h2>
+        <p>Hayatındaki belirsizlikleri matematiksel bir kesinliğe dönüştür. Kriterlerini belirle, seçeneklerini tart ve en rasyonel sonuca ulaş.</p>
+        <button onclick="startApp()">KEŞFETMEYE BAŞLA</button>
     </div>
 </div>
 
-<div class="controls">
-    <button class="btn btn-add" onclick="addNewCard()">+ Yeni Kart</button>
-    <button class="btn">ANALİZ</button>
+<div class="main-content" id="main">
+    <h3 style="margin-left: 10px; font-weight: 300;">Karar Matrisin</h3>
+    <table class="bento-table">
+        <thead>
+            <tr>
+                <th>Seçenek</th>
+                <th>Skor</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <tr onclick="openCards(0)">
+                <td>Seçenek A</td>
+                <td class="neon-text">0.0</td>
+            </tr>
+            <tr onclick="openCards(1)">
+                <td>Seçenek B</td>
+                <td class="neon-text">0.0</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="text-align: center; color: #444; font-size: 0.8rem; margin-top: 20px;">Düzenlemek için satırlara dokun</p>
+</div>
+
+<div id="card-modal">
+    <button class="close-btn" onclick="closeCards()">Kapat</button>
+    <div class="swiper-container" id="card-slider">
+        </div>
 </div>
 
 <script>
-    function updateScore(el) {
-        const card = el.closest('.card');
-        const val = parseFloat(el.value) || 0;
-        card.querySelector('.total-badge').innerText = val.toFixed(1);
+    function startApp() {
+        document.getElementById('welcome-overlay').style.display = 'none';
+        document.getElementById('main').style.opacity = '1';
     }
 
-    function addNewCard() {
-        const deck = document.getElementById('deck');
-        const count = deck.querySelectorAll('.card').length + 1;
-        const newCard = document.createElement('div');
-        newCard.className = 'card';
-        newCard.innerHTML = `
-            <div class="card-number">${count < 10 ? '0'+count : count}</div>
-            <label>SEÇENEK ADI</label>
-            <input type="text" value="Aday ${String.fromCharCode(64 + count)}">
-            <label>KRİTER PUANI</label>
-            <input type="number" class="val" value="0" oninput="updateScore(this)">
-            <div class="score-row">
-                <span>TOPLAM SKOR</span>
-                <div class="total-badge">0.0</div>
-            </div>
-        `;
-        deck.appendChild(newCard);
-        newCard.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    function openCards(index) {
+        const modal = document.getElementById('card-modal');
+        const slider = document.getElementById('card-slider');
+        slider.innerHTML = ''; // Temizle
+
+        // Örnek Kartlar Oluştur (Burayı dinamik yapabilirsin)
+        for(let i=1; i<=3; i++) {
+            const card = document.createElement('div');
+            card.className = 'detail-card';
+            card.innerHTML = `
+                <span style="color:#444">SEÇENEK ${i}</span>
+                <input type="text" value="Aday ${String.fromCharCode(64 + i)}">
+                <p>Kriter Puanlarını Bu Kart Üzerinden Güncelleyebilirsin.</p>
+                <div style="margin-top:auto">
+                    <small>GÜNCEL SKOR</small><br>
+                    <span class="neon-text">8.4</span>
+                </div>
+            `;
+            slider.appendChild(card);
+        }
+
+        modal.style.display = 'flex';
+        // Tıklanan karta odaklan
+        slider.children[index].scrollIntoView();
+    }
+
+    function closeCards() {
+        document.getElementById('card-modal').style.display = 'none';
     }
 </script>
 
