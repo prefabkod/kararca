@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Analitik Motor v3</title>
+    <title>Kararca | Analitik Motor v4</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -14,6 +14,7 @@
             --accent: #fff;
             --primary: #0066ff;
             --danger: #ff4444;
+            --success: #00ffa3;
         }
 
         body {
@@ -27,7 +28,7 @@
 
         .container { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
 
-        /* --- YENİ EKLENEN: HIZLI ŞABLONLAR --- */
+        /* HIZLI ŞABLONLAR */
         .template-section { margin-bottom: 25px; }
         .template-title { font-size: 0.8rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; font-weight: 800; }
         .template-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x mandatory; }
@@ -39,27 +40,26 @@
             white-space: nowrap; cursor: pointer; transition: 0.2s; scroll-snap-align: start;
         }
         .template-btn:hover { border-color: var(--primary); color: #fff; }
-        .template-btn:active { transform: scale(0.95); }
 
         /* KURULUM EKRANI */
         .setup-group { margin-bottom: 30px; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
         .setup-title { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; font-weight: 600; }
         
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        input[type="text"] { flex-grow: 1; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 8px; outline: none; font-size: 1rem; }
-        input[type="text"]:focus { border-color: var(--primary); }
+        input[type="text"], select { flex-grow: 1; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 8px; outline: none; font-size: 1rem; font-family: 'Inter', sans-serif; }
+        input[type="text"]:focus, select:focus { border-color: var(--primary); }
         
         button.add-btn { background: var(--accent); color: #000; border: none; padding: 0 20px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s; }
-        button.add-btn:active { transform: scale(0.95); }
-
+        
         .weight-control { display: flex; align-items: center; gap: 15px; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; }
         .weight-label { font-size: 0.85rem; color: #aaa; width: 100px; }
         .weight-val-display { font-weight: 800; color: var(--primary); width: 25px; text-align: right; }
         
         .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .tag { background: #000; border: 1px solid var(--border); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-        .tag .weight-badge { color: var(--primary); font-size: 0.8rem; font-weight: 800; }
-        .tag span { cursor: pointer; color: var(--danger); font-weight: bold; padding: 0 5px; }
+        .tag .badge-pos { color: var(--success); font-size: 0.8rem; font-weight: 800; }
+        .tag .badge-neg { color: var(--danger); font-size: 0.8rem; font-weight: 800; }
+        .tag span.del { cursor: pointer; color: #666; font-weight: bold; padding: 0 5px; }
 
         .main-btn { background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; width: 100%; margin-top: auto; cursor: pointer; }
 
@@ -68,23 +68,26 @@
         
         .criterion-header { text-align: center; margin-bottom: 30px; }
         .criterion-header h2 { font-size: 2rem; margin: 0; color: var(--primary); }
-        .criterion-header p { color: #666; margin: 5px 0 0 0; font-size: 0.9rem; }
-        .crit-weight-info { display: inline-block; background: rgba(0, 102, 255, 0.1); color: var(--primary); padding: 4px 12px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; margin-top: 10px; border: 1px solid rgba(0, 102, 255, 0.3); }
+        .crit-info-box { display: inline-block; padding: 6px 15px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; margin-top: 10px; }
+        .crit-pos { background: rgba(0, 255, 163, 0.1); color: var(--success); border: 1px solid rgba(0, 255, 163, 0.3); }
+        .crit-neg { background: rgba(255, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(255, 68, 68, 0.3); }
 
         .eval-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
         .eval-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .eval-title { font-weight: 600; font-size: 1.1rem; }
-        .eval-score { font-size: 1.5rem; font-weight: 800; color: var(--accent); width: 45px; text-align: right; }
+        .eval-score { font-size: 1.5rem; font-weight: 800; width: 45px; text-align: right; }
+        .score-pos { color: var(--success); }
+        .score-neg { color: var(--danger); }
 
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -10px; }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
 
         /* SONUÇ EKRANI */
         .result-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border); }
-        .result-item.winner { border-color: var(--primary); background: rgba(0, 102, 255, 0.05); }
+        .result-item.winner { border-color: var(--success); background: rgba(0, 255, 163, 0.05); }
         .result-rank { font-size: 1.5rem; font-weight: 800; color: #444; width: 30px; }
-        .winner .result-rank { color: var(--primary); }
+        .winner .result-rank { color: var(--success); }
         .result-name { flex-grow: 1; font-weight: 600; font-size: 1.2rem; margin-left: 15px; }
         .result-total { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
 
@@ -100,7 +103,6 @@
 <div class="container">
     
     <div id="setup-view">
-        
         <div class="template-section">
             <label class="template-title">⚡ Tek Tıkla Başla</label>
             <div class="template-scroll">
@@ -125,6 +127,14 @@
             <div class="input-row" style="margin-bottom: 10px;">
                 <input type="text" id="crit-input" placeholder="Kriter (Örn: Fiyat)">
             </div>
+            
+            <div class="input-row" style="margin-bottom: 10px;">
+                <select id="crit-sign">
+                    <option value="1">➕ Fayda (Puanı Artırır)</option>
+                    <option value="-1">➖ Maliyet/Risk (Puanı Düşürür)</option>
+                </select>
+            </div>
+
             <div class="weight-control">
                 <div class="weight-label">Önem Derecesi</div>
                 <input type="range" id="crit-weight" min="1" max="10" step="1" value="5" oninput="document.getElementById('weight-display').innerText = this.value">
@@ -139,9 +149,9 @@
 
     <div id="scoring-view">
         <div class="criterion-header">
-            <h2 id="current-crit-name">Kriter Adı</h2>
-            <div class="crit-weight-info" id="current-crit-weight">Ağırlık Çarpanı: x5</div>
-            <p style="margin-top: 15px;"><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
+            <h2 id="current-crit-name" style="color: var(--accent);">Kriter Adı</h2>
+            <div class="crit-info-box" id="current-crit-info">...</div>
+            <p style="margin-top: 15px; color: #666;"><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
         </div>
 
         <div id="evaluation-list" style="overflow-y: auto; flex-grow: 1; padding-bottom: 20px;"></div>
@@ -155,7 +165,7 @@
     <div id="result-view">
         <div class="criterion-header">
             <h2>Rasyonel Sonuç</h2>
-            <p>Ağırlıklı matematik motoru hesaplaması</p>
+            <p>Maliyet ve fayda analizi tamamlandı</p>
         </div>
         <div id="final-results"></div>
         <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Matris Oluştur</button>
@@ -167,41 +177,58 @@
     let data = { options: [], criteria: [], scores: {} };
     let currentCritIndex = 0;
 
-    // --- ŞABLON VERİTABANI ---
+    // Şablonlarda sign (1 veya -1) ayarlandı.
     const templates = [
-        {   // 0
+        {   
             options: ["Tavuk Döner", "İskender", "Sarma/Dolma"],
-            criteria: [{name: "Lezzet Patlaması", weight: 9}, {name: "Cüzdan Dostu", weight: 8}, {name: "Protein & Makro", weight: 7}, {name: "Yemek Sonrası Pişmanlık", weight: 6}]
+            criteria: [
+                {name: "Lezzet Patlaması", weight: 9, sign: 1}, 
+                {name: "Maliyet (Pahalıysa 10 ver)", weight: 8, sign: -1}, 
+                {name: "Protein Oranı", weight: 7, sign: 1}, 
+                {name: "Yemek Sonrası Pişmanlık", weight: 6, sign: -1}
+            ]
         },
-        {   // 1
+        {   
             options: ["Instagram", "TikTok", "YouTube"],
-            criteria: [{name: "İçerik Kalitesi", weight: 8}, {name: "Beyin Hücresi Tüketimi", weight: 9}, {name: "Bağımlılık Riski", weight: 10}]
+            criteria: [
+                {name: "İçerik Kalitesi", weight: 8, sign: 1}, 
+                {name: "Beyin Hücresi Tüketimi", weight: 9, sign: -1}, 
+                {name: "Bağımlılık Riski", weight: 10, sign: -1}
+            ]
         },
-        {   // 2
+        {   
             options: ["Lichess / Satranç", "Dizi İzlemek", "Oyun Oynamak"],
-            criteria: [{name: "Zihinsel Gelişim", weight: 9}, {name: "Eğlence Katsayısı", weight: 8}, {name: "Harcanan Vakit", weight: 6}]
+            criteria: [
+                {name: "Zihinsel Gelişim", weight: 9, sign: 1}, 
+                {name: "Eğlence Katsayısı", weight: 8, sign: 1}, 
+                {name: "Harcanan Vakit", weight: 6, sign: -1}
+            ]
         },
-        {   // 3
-            options: ["Definasyon (Kesik)", "Bulk (Hacim)", "Koruma"],
-            criteria: [{name: "Aynadaki Görsel", weight: 9}, {name: "Disiplin & Diyet Zorluğu", weight: 8}, {name: "Güç Artışı", weight: 7}]
+        {   
+            options: ["Definasyon", "Bulk", "Koruma"],
+            criteria: [
+                {name: "Aynadaki Görsel", weight: 9, sign: 1}, 
+                {name: "Diyet Zorluğu", weight: 8, sign: -1}, 
+                {name: "Güç Artışı", weight: 7, sign: 1}
+            ]
         },
-        {   // 4
-            options: ["Uyumak", "Kod/Proje Kasmak", "Diziye Devam"],
-            criteria: [{name: "Yarınki Zindelik", weight: 9}, {name: "Gelecek Yatırımı", weight: 10}, {name: "Anlık Zevk", weight: 6}]
+        {   
+            options: ["Uyumak", "Kod Kasmak", "Diziye Devam"],
+            criteria: [
+                {name: "Yarınki Zindelik", weight: 9, sign: 1}, 
+                {name: "Gelecek Yatırımı", weight: 10, sign: 1}, 
+                {name: "Anlık Zevk", weight: 6, sign: 1},
+                {name: "Göz Yorgunluğu", weight: 7, sign: -1}
+            ]
         }
     ];
 
-    // Şablon Yükleme Motoru
     function loadTemplate(idx) {
         data.options = [...templates[idx].options];
-        // Kriterleri derin kopyala ki referans hatası olmasın
         data.criteria = JSON.parse(JSON.stringify(templates[idx].criteria));
-        
-        // Direk puanlamaya fırlat
         startScoring();
     }
 
-    // --- MEVCUT MANUEL EKLEME FONKSİYONLARI ---
     function addOption() {
         const val = document.getElementById('opt-input').value.trim();
         if (val && !data.options.includes(val)) {
@@ -211,7 +238,7 @@
 
     function renderOptTags() {
         document.getElementById('opt-tags').innerHTML = data.options.map((opt, i) => 
-            `<div class="tag">${opt} <span onclick="removeOption(${i})">✕</span></div>`
+            `<div class="tag">${opt} <span class="del" onclick="removeOption(${i})">✕</span></div>`
         ).join('');
     }
 
@@ -220,22 +247,27 @@
     function addCriterion() {
         const name = document.getElementById('crit-input').value.trim();
         const weight = parseInt(document.getElementById('crit-weight').value);
+        const sign = parseInt(document.getElementById('crit-sign').value);
+        
         if (name && !data.criteria.find(c => c.name === name)) {
-            data.criteria.push({ name: name, weight: weight });
-            renderCritTags(); document.getElementById('crit-input').value = '';
-            document.getElementById('crit-weight').value = 5; document.getElementById('weight-display').innerText = 5;
+            data.criteria.push({ name: name, weight: weight, sign: sign });
+            renderCritTags(); 
+            document.getElementById('crit-input').value = '';
+            document.getElementById('crit-weight').value = 5; 
+            document.getElementById('weight-display').innerText = 5;
         }
     }
 
     function renderCritTags() {
-        document.getElementById('crit-tags').innerHTML = data.criteria.map((c, i) => 
-            `<div class="tag">${c.name} <span class="weight-badge">(x${c.weight})</span> <span onclick="removeCriterion(${i})">✕</span></div>`
-        ).join('');
+        document.getElementById('crit-tags').innerHTML = data.criteria.map((c, i) => {
+            const badgeClass = c.sign === 1 ? 'badge-pos' : 'badge-neg';
+            const signText = c.sign === 1 ? '+' : '-';
+            return `<div class="tag">${c.name} <span class="${badgeClass}">(x${c.weight}) [${signText}]</span> <span class="del" onclick="removeCriterion(${i})">✕</span></div>`;
+        }).join('');
     }
 
     function removeCriterion(idx) { data.criteria.splice(idx, 1); renderCritTags(); }
 
-    // --- MATRİS MOTORU ---
     function startScoring() {
         if (data.options.length < 2 || data.criteria.length < 1) {
             alert("En az 2 seçenek ve 1 kriter gereklidir."); return;
@@ -254,16 +286,27 @@
     function renderCriterion() {
         const currentCrit = data.criteria[currentCritIndex];
         document.getElementById('current-crit-name').innerText = currentCrit.name;
-        document.getElementById('current-crit-weight').innerText = `Ağırlık Çarpanı: x${currentCrit.weight}`;
+        
+        const infoBox = document.getElementById('current-crit-info');
+        if(currentCrit.sign === 1) {
+            infoBox.className = 'crit-info-box crit-pos';
+            infoBox.innerText = `➕ Pozitif Kriter (Ağırlık: x${currentCrit.weight})`;
+        } else {
+            infoBox.className = 'crit-info-box crit-neg';
+            infoBox.innerText = `➖ Negatif Kriter (Dikkat: Yüksek puan skoru düşürür!) (Ağırlık: x${currentCrit.weight})`;
+        }
+
         document.getElementById('crit-progress').innerText = currentCritIndex + 1;
         document.getElementById('crit-total').innerText = data.criteria.length;
+
+        const scoreClass = currentCrit.sign === 1 ? 'score-pos' : 'score-neg';
 
         const list = document.getElementById('evaluation-list');
         list.innerHTML = data.options.map(opt => `
             <div class="eval-card">
                 <div class="eval-header">
                     <div class="eval-title">${opt}</div>
-                    <div class="eval-score" id="score-val-${opt}">${Number(data.scores[currentCrit.name][opt]).toFixed(1)}</div>
+                    <div class="eval-score ${scoreClass}" id="score-val-${opt}">${Number(data.scores[currentCrit.name][opt]).toFixed(1)}</div>
                 </div>
                 <input type="range" min="1" max="10" step="0.5" value="${data.scores[currentCrit.name][opt]}" 
                     oninput="updateScore('${currentCrit.name}', '${opt}', this.value)">
@@ -273,7 +316,7 @@
         const nextBtn = document.getElementById('next-btn');
         if (currentCritIndex === data.criteria.length - 1) {
             nextBtn.innerText = "Matematiksel Sonucu Gör";
-            nextBtn.style.background = "#00ffa3"; nextBtn.style.color = "#000";
+            nextBtn.style.background = "var(--success)"; nextBtn.style.color = "#000";
         } else {
             nextBtn.innerText = "Sonraki →";
             nextBtn.style.background = "var(--accent)"; nextBtn.style.color = "#000";
@@ -302,9 +345,13 @@
         document.getElementById('scoring-view').style.display = 'none';
         document.getElementById('result-view').style.display = 'flex';
 
+        // YENİ MATEMATİKSEL MOTOR: YÖN (SIGN) İŞİN İÇİNDE
         let finalScores = data.options.map(opt => {
             let total = 0;
-            data.criteria.forEach(c => { total += (data.scores[c.name][opt] * c.weight); });
+            data.criteria.forEach(c => { 
+                // Puan * Ağırlık * Yön (+1 veya -1)
+                total += (data.scores[c.name][opt] * c.weight * c.sign); 
+            });
             return { name: opt, score: total };
         });
 
