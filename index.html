@@ -3,187 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kararca | Analitik Matris</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Kararca | Net Karar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0d0d0d;
-            --panel: #1a1a1a;
-            --border: #333;
-            --accent: #007bff; /* Mühendislik mavisi */
-            --text: #e0e0e0;
+            --bg: #050505;
+            --surface: #121212;
+            --border: #2a2a2a;
+            --text: #f0f0f0;
+            --accent: #fff;
+            --primary: #0066ff;
         }
 
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 0;
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; height: 100vh;
         }
 
-        /* GİRİŞ PANELİ */
-        #onboarding {
-            padding: 40px 20px;
-            border-bottom: 2px solid var(--border);
-            background: linear-gradient(to bottom, #111, #0d0d0d);
-        }
+        header { padding: 20px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; }
 
-        .section-title { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+        .container { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
 
-        /* OPSİYON VE KRİTER GİRİŞİ */
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] {
-            background: #000;
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 12px;
-            flex-grow: 1;
-            font-family: inherit;
-        }
-
-        button {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-        }
-
-        /* ANA TABLO */
-        .matrix-container { padding: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #111; border: 1px solid var(--border); padding: 15px; font-size: 0.7rem; text-align: left; }
-        td { border: 1px solid var(--border); padding: 15px; background: var(--panel); }
-
-        /* KAYDIRMALI PUANLAMA (SLIDER) */
-        .puan-slider {
-            width: 100%;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-        .puan-label { font-size: 1.2rem; font-weight: bold; color: var(--accent); display: block; margin-top: 5px; }
-
-        /* TEKİL KART (MODAL) */
-        #modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            flex-direction: column;
-            padding: 40px 20px;
-            z-index: 1000;
-        }
-
-        .card-header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 30px; }
-        .close-btn { background: #333; margin-bottom: 20px; align-self: flex-end; }
+        /* KURULUM EKRANI */
+        .setup-group { margin-bottom: 30px; }
+        .setup-title { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
         
-        .result-val { font-size: 3rem; font-weight: 700; color: var(--accent); }
+        .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        input[type="text"] { flex-grow: 1; background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 8px; outline: none; font-size: 1rem; }
+        input[type="text"]:focus { border-color: var(--primary); }
+        
+        button.add-btn { background: var(--surface); border: 1px solid var(--border); color: #fff; padding: 0 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { background: #222; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .tag span { cursor: pointer; color: #ff4444; font-weight: bold; }
+
+        .main-btn { background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; width: 100%; margin-top: auto; cursor: pointer; }
+
+        /* PUANLAMA EKRANI */
+        #scoring-view, #result-view { display: none; flex-direction: column; height: 100%; }
+        
+        .criterion-header { text-align: center; margin-bottom: 30px; }
+        .criterion-header h2 { font-size: 2rem; margin: 0; color: var(--primary); }
+        .criterion-header p { color: #666; margin: 5px 0 0 0; font-size: 0.9rem; }
+
+        .eval-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+        .eval-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .eval-title { font-weight: 600; font-size: 1.1rem; }
+        .eval-score { font-size: 1.5rem; font-weight: 800; color: var(--primary); width: 45px; text-align: right; }
+
+        /* ÖZEL SLIDER (1-10 buçuklu) */
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px rgba(0, 102, 255, 0.5); }
+        input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
+
+        /* SONUÇ EKRANI */
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border); }
+        .result-item.winner { border-color: var(--primary); background: rgba(0, 102, 255, 0.1); }
+        .result-rank { font-size: 1.5rem; font-weight: 800; color: #555; width: 30px; }
+        .winner .result-rank { color: var(--primary); }
+        .result-name { flex-grow: 1; font-weight: 600; font-size: 1.2rem; margin-left: 15px; }
+        .result-total { font-size: 1.5rem; font-weight: 800; }
+
+        .nav-buttons { display: flex; gap: 10px; margin-top: auto; padding-bottom: 20px;}
+        .nav-buttons button { flex: 1; }
+        .btn-secondary { background: transparent; border: 1px solid var(--border); color: #fff; padding: 18px; border-radius: 12px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="onboarding">
-    <div class="section-title">01. Veri Girişi</div>
-    <div class="input-group">
-        <input type="text" id="opt-input" placeholder="Opsiyon Ekle (örn: iPhone 15)">
-        <button onclick="addOption()">Ekle</button>
-    </div>
-    <div class="input-group">
-        <input type="text" id="crit-input" placeholder="Kriter Ekle (örn: Batarya Ömrü)">
-        <button onclick="addCriterion()">Ekle</button>
-    </div>
-</div>
+<header>KARARCA</header>
 
-<div class="matrix-container">
-    <div class="section-title">02. Matris Görünümü</div>
-    <table id="matrixTable">
-        <thead>
-            <tr id="headerRow">
-                <th>Opsiyonlar</th>
-                <th style="width: 100px;">Skor</th>
-            </tr>
-        </thead>
-        <tbody id="bodyRows">
-            </tbody>
-    </table>
-</div>
-
-<div id="modal">
-    <button class="close-btn" onclick="closeModal()">KAPAT [X]</button>
-    <div class="card-header">
-        <div class="section-title">Detaylı Analiz</div>
-        <h2 id="modal-title">Seçenek Adı</h2>
-    </div>
-    <div id="modal-content">
+<div class="container">
+    
+    <div id="setup-view">
+        <div class="setup-group">
+            <label class="setup-title">1. Neleri Kıyaslıyoruz? (Opsiyonlar)</label>
+            <div class="input-row">
+                <input type="text" id="opt-input" placeholder="Örn: A Markası, B Evi...">
+                <button class="add-btn" onclick="addTag('options', 'opt-input', 'opt-tags')">Ekle</button>
+            </div>
+            <div class="tag-container" id="opt-tags"></div>
         </div>
-    <div style="margin-top: auto; text-align: right;">
-        <div class="section-title">Toplam Rasyonel Puan</div>
-        <div class="result-val" id="modal-total">0.0</div>
+
+        <div class="setup-group">
+            <label class="setup-title">2. Hangi Açılardan? (Kriterler)</label>
+            <div class="input-row">
+                <input type="text" id="crit-input" placeholder="Örn: Fiyat, Performans...">
+                <button class="add-btn" onclick="addTag('criteria', 'crit-input', 'crit-tags')">Ekle</button>
+            </div>
+            <div class="tag-container" id="crit-tags"></div>
+        </div>
+
+        <button class="main-btn" onclick="startScoring()">Puanlamaya Geç →</button>
     </div>
+
+    <div id="scoring-view">
+        <div class="criterion-header">
+            <h2 id="current-crit-name">Kriter Adı</h2>
+            <p><span id="crit-progress">1</span> / <span id="crit-total">3</span></p>
+        </div>
+
+        <div id="evaluation-list" style="overflow-y: auto; flex-grow: 1; padding-bottom: 20px;">
+            </div>
+
+        <div class="nav-buttons">
+            <button class="btn-secondary" onclick="prevCriterion()">← Geri</button>
+            <button class="main-btn" onclick="nextCriterion()" id="next-btn">Sonraki →</button>
+        </div>
+    </div>
+
+    <div id="result-view">
+        <div class="criterion-header">
+            <h2>Analiz Sonucu</h2>
+            <p>Matematiksel olarak en mantıklı sıralama</p>
+        </div>
+        
+        <div id="final-results"></div>
+        
+        <button class="btn-secondary" style="margin-top: 30px; width: 100%;" onclick="location.reload()">Yeni Analiz Başlat</button>
+    </div>
+
 </div>
 
 <script>
-    let options = [];
-    let criteria = [];
+    let data = { options: [], criteria: [], scores: {} };
+    let currentCritIndex = 0;
 
-    function addOption() {
-        const val = document.getElementById('opt-input').value;
-        if(val) {
-            options.push(val);
-            renderTable();
-            document.getElementById('opt-input').value = '';
+    function addTag(type, inputId, containerId) {
+        const input = document.getElementById(inputId);
+        const val = input.value.trim();
+        if (val && !data[type].includes(val)) {
+            data[type].push(val);
+            renderTags(type, containerId);
+            input.value = '';
         }
     }
 
-    function addCriterion() {
-        const val = document.getElementById('crit-input').value;
-        if(val) {
-            criteria.push(val);
-            renderTable();
-            document.getElementById('crit-input').value = '';
+    function removeTag(type, index, containerId) {
+        data[type].splice(index, 1);
+        renderTags(type, containerId);
+    }
+
+    function renderTags(type, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = data[type].map((item, i) => 
+            `<div class="tag">${item} <span onclick="removeTag('${type}', ${i}, '${containerId}')">✕</span></div>`
+        ).join('');
+    }
+
+    function startScoring() {
+        if (data.options.length < 2 || data.criteria.length < 1) {
+            alert("En az 2 opsiyon ve 1 kriter eklemelisin."); return;
         }
+        
+        // Puan matrisini hazırla
+        data.criteria.forEach(c => { if(!data.scores[c]) data.scores[c] = {}; });
+        data.options.forEach(o => {
+            data.criteria.forEach(c => { if(data.scores[c][o] === undefined) data.scores[c][o] = 5.0; });
+        });
+
+        document.getElementById('setup-view').style.display = 'none';
+        document.getElementById('scoring-view').style.display = 'flex';
+        renderCriterion();
     }
 
-    function renderTable() {
-        const header = document.getElementById('headerRow');
-        const body = document.getElementById('bodyRows');
-        
-        // Header güncelle
-        header.innerHTML = '<th>Opsiyonlar</th>' + 
-            criteria.map(c => `<th>${c}</th>`).join('') + 
-            '<th>Skor</th>';
+    function renderCriterion() {
+        const critName = data.criteria[currentCritIndex];
+        document.getElementById('current-crit-name').innerText = critName;
+        document.getElementById('crit-progress').innerText = currentCritIndex + 1;
+        document.getElementById('crit-total').innerText = data.criteria.length;
 
-        // Satırları güncelle
-        body.innerHTML = options.map((opt, i) => `
-            <tr onclick="openModal(${i})">
-                <td style="font-weight:bold">${opt}</td>
-                ${criteria.map(() => `<td>-</td>`).join('')}
-                <td style="color:var(--accent)">0.0</td>
-            </tr>
-        `).join('');
-    }
-
-    function openModal(idx) {
-        document.getElementById('modal').style.display = 'flex';
-        document.getElementById('modal-title').innerText = options[idx];
-        
-        const content = document.getElementById('modal-content');
-        content.innerHTML = criteria.map((c, cIdx) => `
-            <div style="margin-bottom:30px">
-                <label class="section-title">${c}</label>
-                <input type="range" class="puan-slider" min="1" max="10" step="0.5" value="5" 
-                       oninput="this.nextElementSibling.innerText = this.value">
-                <span class="puan-label">5</span>
+        const list = document.getElementById('evaluation-list');
+        list.innerHTML = data.options.map(opt => `
+            <div class="eval-card">
+                <div class="eval-header">
+                    <div class="eval-title">${opt}</div>
+                    <div class="eval-score" id="score-val-${opt}">${Number(data.scores[critName][opt]).toFixed(1)}</div>
+                </div>
+                <input type="range" min="1" max="10" step="0.5" value="${data.scores[critName][opt]}" 
+                    oninput="updateScore('${critName}', '${opt}', this.value)">
             </div>
         `).join('');
+
+        const nextBtn = document.getElementById('next-btn');
+        if (currentCritIndex === data.criteria.length - 1) {
+            nextBtn.innerText = "Sonucu Gör";
+            nextBtn.style.background = "#00e676"; // Yeşil bitiş butonu
+        } else {
+            nextBtn.innerText = "Sonraki →";
+            nextBtn.style.background = "var(--accent)";
+        }
     }
 
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
+    function updateScore(crit, opt, val) {
+        data.scores[crit][opt] = parseFloat(val);
+        document.getElementById(`score-val-${opt}`).innerText = parseFloat(val).toFixed(1);
+    }
+
+    function nextCriterion() {
+        if (currentCritIndex < data.criteria.length - 1) {
+            currentCritIndex++;
+            renderCriterion();
+        } else {
+            showResults();
+        }
+    }
+
+    function prevCriterion() {
+        if (currentCritIndex > 0) {
+            currentCritIndex--;
+            renderCriterion();
+        } else {
+            document.getElementById('scoring-view').style.display = 'none';
+            document.getElementById('setup-view').style.display = 'flex';
+        }
+    }
+
+    function showResults() {
+        document.getElementById('scoring-view').style.display = 'none';
+        document.getElementById('result-view').style.display = 'flex';
+
+        let finalScores = data.options.map(opt => {
+            let total = 0;
+            data.criteria.forEach(crit => total += data.scores[crit][opt]);
+            return { name: opt, score: total };
+        });
+
+        finalScores.sort((a, b) => b.score - a.score);
+
+        const resultHtml = finalScores.map((item, i) => `
+            <div class="result-item ${i === 0 ? 'winner' : ''}">
+                <div class="result-rank">#${i + 1}</div>
+                <div class="result-name">${item.name}</div>
+                <div class="result-total">${item.score.toFixed(1)}</div>
+            </div>
+        `).join('');
+
+        document.getElementById('final-results').innerHTML = resultHtml;
     }
 </script>
 
